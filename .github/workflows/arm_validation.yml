@@ -14,9 +14,6 @@ jobs:
     - name: Checkout your repository
       uses: actions/checkout@v3
 
-    - name: Clone ARM-TTK from GitHub
-      run: git clone https://github.com/Azure/arm-ttk.git tools/arm-ttk
-
     - name: Import and Run ARM-TTK Tests
       run: |
         pwsh -Command "Import-Module ./tools/arm-ttk/arm-ttk.psd1"
