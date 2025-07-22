@@ -18,12 +18,11 @@ jobs:
     - name: Run ARM-TTK Tests and Capture All Results
       shell: pwsh
       run: |
+        Start-Transcript -Path results.txt -Append
         Import-Module ./tools/arm-ttk/arm-ttk/arm-ttk.psd1
-        "## ARM-TTK Test Results for azuredeploy.json" | Out-File -FilePath results.txt -Encoding utf8
-    
-        # Run the test and capture all output (stdout + stderr)
-        $output = Test-AzTemplate -TemplatePath ./templates/azuredeploy.json -ErrorAction Continue 2>&1
-        $output | Out-String | Out-File -FilePath results.txt -Append -Encoding utf8
+        Test-AzTemplate -TemplatePath ./templates/azuredeploy.json -ErrorAction Continue
+        Stop-Transcript
+
 
 
 
