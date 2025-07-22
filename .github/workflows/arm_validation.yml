@@ -1,0 +1,42 @@
+name: ARM Template Validation Pipeline
+
+on:
+  push:
+    paths:
+      - 'templates/**'
+  workflow_dispatch:
+
+jobs:
+  validate-arm-template:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install PowerShell & ARM-TTK
+      run: |
+        pwsh -Command "Install-Module -Name arm-ttk -Force -Scope CurrentUser"
+        pwsh -Command "Import-Module arm-ttk"
+
+    - name: Run ARM-TTK Tests
+      run: |
+        pwsh -Command "Test-AzTemplate -TemplatePath ./templates | Tee-Object -Variable result"
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Run Python Script
+      run: python compare.py
+
+    - name: Document Findings
+      run: |
+        echo "## Validation Results" > results.md
+        echo "ARM-TTK and parameter analysis completed." >> results.md
+    - name: Upload Documentation
+      uses: actions/upload-artifact@v3
+      with:
+        name: validation-results
+        path: results.md
