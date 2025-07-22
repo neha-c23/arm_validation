@@ -15,9 +15,16 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Run ARM-TTK Tests and Capture Failures
+      shell: pwsh
       run: |
-        pwsh -Command "Import-Module ./tools/arm-ttk/arm-ttk/arm-ttk.psd1"
-        pwsh -Command "./tools/arm-ttk/arm-ttk/Test-AzTemplate.ps1 -TemplatePath ./templates | Where-Object { \$_.Result -ne 'Passed' } | Out-File -FilePath results.txt -Append"
+        Import-Module ./tools/arm-ttk/arm-ttk/arm-ttk.psd1
+        $results = Test-AzTemplate -TemplatePath ./templates | Where-Object { $_.Result -ne 'Passed' }
+        if ($results) {
+          "## ARM-TTK Failed Tests" | Out-File -FilePath results.txt -Encoding utf8
+          $results | Format-Table -AutoSize | Out-String | Out-File -FilePath results.txt -Append -Encoding utf8
+        } else {
+          "## All ARM-TTK tests passed." | Out-File -FilePath results.txt -Encoding utf8
+        }
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -26,6 +33,7 @@ jobs:
 
     - name: Run Python Script and Append Output
       run: |
+        echo "## Python Script Output" >> results.txt
         python compare.py >> results.txt
 
     - name: Display Results
