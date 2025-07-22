@@ -14,24 +14,22 @@ jobs:
     - name: Checkout your repository
       uses: actions/checkout@v4
 
+    
     - name: Run ARM-TTK Tests and Capture All Results
       shell: pwsh
       run: |
-        try {
-          Import-Module ./tools/arm-ttk/arm-ttk/arm-ttk.psd1
-          "## ARM-TTK Test Results" | Out-File -FilePath results.txt -Encoding utf8
-          $files = Get-ChildItem -Path ./templates -Filter *.json
-          foreach ($file in $files) {
-            "### Testing $($file.Name)" | Out-File -FilePath results.txt -Append -Encoding utf8
-            $results = Test-AzTemplate -TemplatePath $file.FullName -ErrorAction Continue 2>&1
-            $results | Out-String | Out-File -FilePath results.txt -Append -Encoding utf8
-          }
-        } catch {
-          "An error occurred while running ARM-TTK tests: $_" | Out-File -FilePath results.txt -Append -Encoding utf8
-        } finally {
-          # Always exit with 0 to prevent pipeline failure
-          exit 0
+        Import-Module ./tools/arm-ttk/arm-ttk/arm-ttk.psd1
+        "## ARM-TTK Test Results" | Out-File -FilePath results.txt -Encoding utf8
+    
+        $files = Get-ChildItem -Path ./templates -Filter *.json
+        foreach ($file in $files) {
+          "### Testing $($file.Name)" | Out-File -FilePath results.txt -Append -Encoding utf8
+    
+          # Capture all output including errors
+          $output = Test-AzTemplate -TemplatePath $file.FullName -ErrorAction Continue 2>&1
+          $output | Out-String | Out-File -FilePath results.txt -Append -Encoding utf8
         }
+
 
 
     - name: Set up Python
