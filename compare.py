@@ -16,5 +16,5 @@ def compare_parameters(maps_template_path, quickstart_template_path):
         print(param)
 
 #call function
-compare_parameters(r"C:\Users\1925zn\OneDrive - BP\MyFiles\TemplatesAgain\PostgresSQL\Azure PostgreSQL\Flexible_Server_Template.json", r"C:\Users\1925zn\OneDrive - BP\MyFiles\AZQuickstart\postgresql.json")
+compare_parameters(r"https://github.com/neha-c23/arm_validation/blob/main/templates/DeploymentTemplate_ASEv3_Generic.json", r"https://raw.githubusercontent.com/Azure/azure-quickstart-templates/4b98edf26a59f311fe599bef4e48850d55e5fb50/quickstarts/microsoft.web/web-app-asp-app-on-asev3-create/azuredeploy.json")
 
