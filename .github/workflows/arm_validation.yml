@@ -14,17 +14,13 @@ jobs:
     - name: Checkout your repository
       uses: actions/checkout@v4
 
-    - name: Run ARM-TTK Tests and Capture Failures
+    - name: Run ARM-TTK Tests and Capture All Results
       shell: pwsh
       run: |
         Import-Module ./tools/arm-ttk/arm-ttk/arm-ttk.psd1
-        $results = Test-AzTemplate -TemplatePath ./templates | Where-Object { $_.Result -ne 'Passed' }
-        if ($results) {
-          "## ARM-TTK Failed Tests" | Out-File -FilePath results.txt -Encoding utf8
-          $results | Format-Table -AutoSize | Out-String | Out-File -FilePath results.txt -Append -Encoding utf8
-        } else {
-          "## All ARM-TTK tests passed." | Out-File -FilePath results.txt -Encoding utf8
-        }
+        "## ARM-TTK Test Results" | Out-File -FilePath results.txt -Encoding utf8
+        $results = Test-AzTemplate -TemplatePath ./templates
+        $results | Format-Table -AutoSize | Out-String | Out-File -FilePath results.txt -Append -Encoding utf8
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -35,7 +31,6 @@ jobs:
       run: |
         echo "## Python Script Output" >> results.txt
         python compare.py >> results.txt
-
     - name: Display Results
       run: cat results.txt
 
