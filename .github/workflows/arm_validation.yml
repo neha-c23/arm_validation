@@ -14,14 +14,13 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Install PowerShell & ARM-TTK
-      run: |
-        pwsh -Command "Install-Module -Name arm-ttk -Force -Scope CurrentUser"
-        pwsh -Command "Import-Module arm-ttk"
+    - name: Clone ARM-TTK from GitHub
+      run: git clone https://github.com/Azure/arm-ttk.git tools/arm-ttk
 
-    - name: Run ARM-TTK Tests
+    - name: Import and Run ARM-TTK Tests
       run: |
-        pwsh -Command "Test-AzTemplate -TemplatePath ./templates | Tee-Object -Variable result"
+        pwsh -Command "Import-Module ./tools/arm-ttk/arm-ttk.psd1"
+        pwsh -Command "Test-AzTemplate -TemplatePath ./templates"
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -35,6 +34,7 @@ jobs:
       run: |
         echo "## Validation Results" > results.md
         echo "ARM-TTK and parameter analysis completed." >> results.md
+
     - name: Upload Documentation
       uses: actions/upload-artifact@v4
       with:
