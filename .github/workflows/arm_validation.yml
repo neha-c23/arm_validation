@@ -17,7 +17,7 @@ jobs:
     - name: Import and Run ARM-TTK Tests
       run: |
         pwsh -Command "Import-Module ./tools/arm-ttk/arm-ttk/arm-ttk.psd1"
-        pwsh -Command "Test-AzTemplate -TemplatePath ./templates"
+        pwsh -Command "./tools/arm-ttk/arm-ttk/Test-AzTemplate.ps1 -TemplatePath ./templates"
 
     - name: Set up Python
       uses: actions/setup-python@v4
