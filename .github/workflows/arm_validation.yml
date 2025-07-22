@@ -14,26 +14,25 @@ jobs:
     - name: Checkout your repository
       uses: actions/checkout@v4
 
-    - name: Import and Run ARM-TTK Tests
+    - name: Run ARM-TTK Tests and Capture Failures
       run: |
         pwsh -Command "Import-Module ./tools/arm-ttk/arm-ttk/arm-ttk.psd1"
-        pwsh -Command "./tools/arm-ttk/arm-ttk/Test-AzTemplate.ps1 -TemplatePath ./templates"
+        pwsh -Command "./tools/arm-ttk/arm-ttk/Test-AzTemplate.ps1 -TemplatePath ./templates | Where-Object { \$_.Result -ne 'Passed' } | Out-File -FilePath results.txt -Append"
 
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.x'
 
-    - name: Run Python Script
-      run: python compare.py
-
-    - name: Document Findings
+    - name: Run Python Script and Append Output
       run: |
-        echo "## Validation Results" > results.md
-        echo "ARM-TTK and parameter analysis completed." >> results.md
+        python compare.py >> results.txt
 
-    - name: Upload Documentation
+    - name: Display Results
+      run: cat results.txt
+
+    - name: Upload Results
       uses: actions/upload-artifact@v4
       with:
         name: validation-results
-        path: results.md
+        path: results.txt
