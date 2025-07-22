@@ -12,11 +12,11 @@ jobs:
 
     steps:
     - name: Checkout your repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Import and Run ARM-TTK Tests
       run: |
-        pwsh -Command "Import-Module ./tools/arm-ttk/arm-ttk.psd1"
+        pwsh -Command "Import-Module ./tools/arm-ttk/arm-ttk/arm-ttk.psd1"
         pwsh -Command "Test-AzTemplate -TemplatePath ./templates"
 
     - name: Set up Python
