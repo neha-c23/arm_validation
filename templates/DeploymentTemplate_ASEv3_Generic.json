@@ -1,0 +1,221 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "subnetId": {
+      "type": "string",
+      "metadata": {
+          "description": "ARM Url reference for the subnet that will contain the ASE.  Only Microsoft.Network is supported for ASEv2.  /subscriptions/subIDGoesHere/resourceGroups/rgNameGoesHere/providers/Microsoft.Network/virtualNetworks/vnetnamegoeshere"
+      }
+    },
+    "virtualNetworkId": {
+      "type": "string",
+      "metadata": {
+          "description": "ARM Url reference for the virtual network that will contain the ASE.  Only Microsoft.Network is supported for ASEv2.  /subscriptions/subIDGoesHere/resourceGroups/rgNameGoesHere/providers/Microsoft.Network/virtualNetworks/vnetnamegoeshere"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Required. Location for all resources."
+      }
+    },
+    "subnetName": {
+      "type": "string",
+      "defaultValue": "snet-asev3",
+      "metadata": {
+        "description": "Required. The subnet Name of ASEv3."
+      }
+    },
+    "aseName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of ASEv3."
+      }
+    },
+    "dedicatedHostCount": {
+      "type": "string",
+      "defaultValue": "0",
+      "metadata": {
+        "description": "Required. Dedicated host count of ASEv3."
+      }
+    },
+    "zoneRedundant": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Required. Zone redundant of ASEv3."
+      }
+    },
+    "createPrivateDNS": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Create a private DNS zone for ASEv3."
+      }
+    },
+    "internalLoadBalancingMode": {
+      "type": "int",
+      "defaultValue": 3,
+      "allowedValues": [
+        0,
+        3
+      ],
+      "metadata": {
+        "description": "Required. Load balancer mode: 0-external load balancer, 3-internal load balancer for ASEv3."
+      }
+    }
+  },
+  "functions": [],
+  "variables": {
+    "uniStr": "[uniqueString(resourceGroup().id)]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/hostingEnvironments",
+      "apiVersion": "2020-12-01",
+      "name": "[parameters('aseName')]",
+      "location": "[parameters('location')]",
+      "kind": "ASEV3",
+      "properties": {
+        "dedicatedHostCount": "[parameters('dedicatedHostCount')]",
+        "zoneRedundant": "[parameters('zoneRedundant')]",
+        "internalLoadBalancingMode": 3,
+        "virtualNetwork": {
+          "Id": "[parameters('subnetId')]",
+          "Subnet": "[parameters('subnetName')]"
+        },
+        "clusterSettings": [
+          {
+            "name": "DisableTls1.0",
+            "value": "1"
+          }]
+      },
+      "dependsOn": []
+    },
+    {
+      "condition": "[and(parameters('createPrivateDNS'), equals(parameters('internalLoadBalancingMode'), 3))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-10-01",
+      "name": "[format('private-dns-zone-deployment-{0}', variables('uniStr'))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "privateDNSZoneName": {
+            "value": "[reference(resourceId('Microsoft.Web/hostingEnvironments', parameters('aseName'))).dnsSuffix]"
+          },
+          "virtualNetworkId": {
+            "value": "[parameters('virtualNetworkId')]"
+          },
+          "aseName": {
+            "value": "[parameters('aseName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "aseName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. ASE name."
+              }
+            },
+            "privateDNSZoneName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Private DNS zone name."
+              }
+            },
+            "virtualNetworkId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Network Id."
+              }
+            }
+          },
+          "functions": [],
+          "resources": [
+            {
+              "type": "Microsoft.Network/privateDnsZones",
+              "apiVersion": "2020-06-01",
+              "name": "[parameters('privateDNSZoneName')]",
+              "location": "global",
+              "properties": {}
+            },
+            {
+              "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+              "apiVersion": "2020-06-01",
+              "name": "[format('{0}/{1}', parameters('privateDNSZoneName'), 'vnetLink')]",
+              "location": "global",
+              "properties": {
+                "virtualNetwork": {
+                  "id": "[parameters('virtualNetworkId')]"
+                },
+                "registrationEnabled": false
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDNSZoneName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Network/privateDnsZones/A",
+              "apiVersion": "2020-06-01",
+              "name": "[format('{0}/{1}', parameters('privateDNSZoneName'), '*')]",
+              "properties": {
+                "ttl": 3600,
+                "aRecords": [
+                  {
+                    "ipv4Address": "[reference(resourceId('Microsoft.Web/hostingEnvironments/configurations', split(format('{0}/networking', parameters('aseName')), '/')[0], split(format('{0}/networking', parameters('aseName')), '/')[1]), '2021-01-15').internalInboundIpAddresses[0]]"
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDNSZoneName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Network/privateDnsZones/A",
+              "apiVersion": "2020-06-01",
+              "name": "[format('{0}/{1}', parameters('privateDNSZoneName'), '*.scm')]",
+              "properties": {
+                "ttl": 3600,
+                "aRecords": [
+                  {
+                    "ipv4Address": "[reference(resourceId('Microsoft.Web/hostingEnvironments/configurations', split(format('{0}/networking', parameters('aseName')), '/')[0], split(format('{0}/networking', parameters('aseName')), '/')[1]), '2021-01-15').internalInboundIpAddresses[0]]"
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDNSZoneName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Network/privateDnsZones/A",
+              "apiVersion": "2020-06-01",
+              "name": "[format('{0}/{1}', parameters('privateDNSZoneName'), '@')]",
+              "properties": {
+                "ttl": 3600,
+                "aRecords": [
+                  {
+                    "ipv4Address": "[reference(resourceId('Microsoft.Web/hostingEnvironments/configurations', split(format('{0}/networking', parameters('aseName')), '/')[0], split(format('{0}/networking', parameters('aseName')), '/')[1]), '2021-01-15').internalInboundIpAddresses[0]]"
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDNSZoneName'))]"
+              ]
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/hostingEnvironments', parameters('aseName'))]"
+      ]
+    }
+  ]
+}

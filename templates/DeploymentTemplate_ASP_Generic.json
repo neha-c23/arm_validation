@@ -1,0 +1,96 @@
+﻿{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "asece": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the App Service Environment CE where the app service plan will be created."
+      }
+    },
+    "capacity": {
+      "type": "int",
+      "defaultValue": 1,
+      "metadata": {
+        "description": "Defines the number of instances that will be allocated to the app service plan."
+      }
+    },
+    "osType": {
+      "type": "string",
+      "metadata": {
+        "description": "The Operating system for the ASP"
+      }
+    },
+
+    "location": {
+      "type": "string",
+      "allowedValues": [
+
+      ],
+      "metadata": {
+        "description": "This parameter is used so that the location can be put in the parameters file, and processed by the deployment script, it is not otherwise used"
+      }
+    },
+    "ASPName": {
+      "type": "string",
+      "metadata": {
+        "description": "Object containing list of ASEs  to create."
+      }
+    },
+    "AseName": {
+      "type": "string",
+      "metadata": {
+        "description": "Object containing list of ASEs  to create."
+      }
+    },
+    "PricingTier": {
+      "type": "string",
+      "metadata": {
+        "description": "Object containing list of ASEs  to create."
+      }
+    },
+    "Capac": {
+      "type": "int",
+      "metadata": {
+        "description": "Object containing list of ASEs  to create."
+      }
+    },
+    "AspCount": {
+      "type": "int",
+      "metadata": {
+        "description": "Object containing list of ASEs  to create."
+      }
+    }
+  },
+  "variables": {
+    "asergname": "[parameters('asece')]",
+    "reserved": "[equals(parameters('osType'),'Linux')]"
+  },
+  "resources": [
+    {
+      "apiVersion": "2015-08-01",
+      "name": "[parameters('ASPName')]",
+      "type": "Microsoft.Web/serverfarms",
+      "location": "[parameters('location')]",
+      "kind": "[parameters('osType')]",
+      "properties": {
+        "hostingEnvironmentProfile": {
+          "id": "[resourceId(variables('asergname'), 'Microsoft.Web/hostingEnvironments', parameters('AseName') )]"
+        },
+        "reserved":"[variables('reserved')]"
+      },
+      "sku": {
+        "name": "[concat('I',parameters('PricingTier'))]",
+        "tier": "Isolated",
+        "size": "[concat('I',parameters('PricingTier'))]",
+        "family": "I",
+        "capacity": "[parameters('Capac')]"
+      },
+      "copy": {
+        "name": "CopyNumberOfASPs",
+        "count": "[parameters('AspCount')]"
+      }
+
+    }
+  ]
+}
