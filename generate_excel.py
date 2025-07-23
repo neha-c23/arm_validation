@@ -19,9 +19,14 @@ try:
     with open("results.txt", "r", encoding="utf-8") as file:
         lines = file.readlines()
         in_suggested_section = False
-        for line in lines:
+
+         for line in lines:
             if "[-]" in line:
                 failed_tests.append(line)
+            if line == "**********************":
+                break
+
+        for line in lines:
             if "Custom Params" in line:
                 in_suggested_section = True
                 continue
@@ -29,7 +34,7 @@ try:
                 custom_params.append(line.strip())
             if "QS Params" in line:
                 in_suggested_section = False
-            if !in_suggested_section:
+            if in_suggested_section == False:
                 qs_params.append(line)
 except FileNotFoundError:
     print("results.txt file not found.")
