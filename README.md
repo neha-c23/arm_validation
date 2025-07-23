@@ -15,7 +15,8 @@ arm_validation/
 │   └── arm-ttk/  
 │       └── arm-ttk.psd1  
 │       └── Test-AzTemplate.ps1  
+├── generate_excel.py  
 └── compare.py  
   
 Output:  
-The workflow generates an artifact - a results.txt file - that contains the results of all the tests run by arm-ttk, and the additional parameters that can be added to the custom template  
+The workflow generates an artifact - a validate_results.xlsx file - that contains the results of all the tests run by arm-ttk, and the parameters contained in both, the custom template and the Azure Quickstart sample template. 
