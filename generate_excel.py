@@ -1,4 +1,5 @@
 import openpyxl
+import ast
 
 # Create a new Excel workbook and select the active worksheet
 wb = openpyxl.Workbook()
@@ -18,17 +19,21 @@ qs_params = []
 try:
     with open("results.txt", "r", encoding="utf-8") as file:
         lines = file.readlines()
-        in_suggested_section = False
-
         for line in lines:
             if "[-]" in line:
                 failed_tests.append(line.strip())
-
-        for line in lines:
-            if "Custom params" in line:
-                custom_params.append(line.strip())
-            elif "QS params" in line:
-                qs_params.append(line.strip())
+            elif line.startswith("Custom params:"):
+                param_str = line.split("Custom params:")[1].strip()
+                try:
+                    custom_params = list(ast.literal_eval(param_str))
+                except Exception as e:
+                    print(f"Error parsing custom params: {e}")
+            elif line.startswith("QS params:"):
+                param_str = line.split("QS params:")[1].strip()
+                try:
+                    qs_params = list(ast.literal_eval(param_str))
+                except Exception as e:
+                    print(f"Error parsing QS params: {e}")
 
 except FileNotFoundError:
     print("results.txt file not found.")
@@ -48,3 +53,4 @@ for i in range(max_rows):
 # Save the workbook
 wb.save("validation_results.xlsx")
 print("Excel file 'validation_results.xlsx' has been created successfully.")
+
