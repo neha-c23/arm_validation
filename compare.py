@@ -11,8 +11,8 @@ def compare_parameters(maps_template_url, quickstart_template_url):
     maps_params = load_parameters_from_url(maps_template_url)
     quickstart_params = load_parameters_from_url(quickstart_template_url)
 
-    print (maps_params)
-    print (quickstart_params)
+    print ("Custom params:", maps_params)
+    print ("QS params:", quickstart_params)
 
 # Call the function with URLs
 compare_parameters(
