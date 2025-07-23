@@ -20,7 +20,7 @@ try:
         lines = file.readlines()
         in_suggested_section = False
 
-         for line in lines:
+        for line in lines:
             if "[-]" in line:
                 failed_tests.append(line)
             if line == "**********************":
