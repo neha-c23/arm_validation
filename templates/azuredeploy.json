@@ -4,7 +4,6 @@
   "parameters": {
     "resourcegroup": {
       "type": "string"
-      
     },
     "capacity": {
       "type": "int",
@@ -13,30 +12,24 @@
     "osType": {
       "type": "string"
     },
-
     "location": {
       "type": "string",
       "allowedValues": []
     },
     "ASPName": {
-      "type": "string"
-      
+      "type": "string" 
     },
     "AseName": {
-      "type": "string"
-     
+      "type": "string"  
     },
     "PricingTier": {
-      "type": "string"
-      
+      "type": "string"  
     },
     "Capac": {
       "type": "int"
-      
     },
     "AspCount": {
       "type": "int"
-      
     }
   },
   "variables": {
@@ -67,7 +60,6 @@
         "name": "CopyNumberOfASPs",
         "count": "[parameters('AspCount')]"
       }
-
     }
   ]
 }
