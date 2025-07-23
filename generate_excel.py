@@ -7,24 +7,30 @@ ws.title = "Validation Results"
 
 # Set headers
 ws['A1'] = 'FAILED TESTS'
-ws['B1'] = 'SUGGESTED PARAMS'
+ws['B1'] = 'CUSTOM TEMPLATE PARAMETERS'
+ws['C1'] = 'QS TEMPLATE PARAMETERS'
 
 # Read failed tests and suggested parameters from results.txt
 failed_tests = []
-suggested_params = []
+custom_params = []
+qs_params = []
 
 try:
     with open("results.txt", "r", encoding="utf-8") as file:
         lines = file.readlines()
         in_suggested_section = False
         for line in lines:
-            if "Describing" in line and "FAIL" in line:
-                failed_tests.append(line.strip())
-            if "## Python Script Output" in line:
+            if "[-]" in line:
+                failed_tests.append(line)
+            if "Custom Params" in line:
                 in_suggested_section = True
                 continue
-            if in_suggested_section and line.strip():
-                suggested_params.append(line.strip())
+            if in_suggested_section:
+                custom_params.append(line.strip())
+            if "QS Params" in line:
+                in_suggested_section = False
+            if !in_suggested_section:
+                qs_params.append(line)
 except FileNotFoundError:
     print("results.txt file not found.")
 
@@ -35,8 +41,10 @@ max_rows = max(len(failed_tests), len(suggested_params))
 for i in range(max_rows):
     if i < len(failed_tests):
         ws.cell(row=i+2, column=1, value=failed_tests[i])
-    if i < len(suggested_params):
-        ws.cell(row=i+2, column=2, value=suggested_params[i])
+    if i < len(custom_params):
+        ws.cell(row=i+2, column=2, value=custom_params[i])
+    if i<len(qs_params):
+        ws.cell(row = i+2, column = 3, value = qs_params[i])
 
 # Save the workbook
 wb.save("validation_results.xlsx")
