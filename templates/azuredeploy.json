@@ -1,39 +1,69 @@
-﻿{
+{
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "resourcegroup": {
-      "type": "string"
+    "asece": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the App Service Environment CE where the app service plan will be created."
+      }
     },
     "capacity": {
       "type": "int",
-      "defaultValue": 1
+      "defaultValue": 1,
+      "metadata": {
+        "description": "Defines the number of instances that will be allocated to the app service plan."
+      }
     },
     "osType": {
-      "type": "string"
+      "type": "string",
+      "metadata": {
+        "description": "The Operating system for the ASP"
+      }
     },
+
     "location": {
       "type": "string",
-      "allowedValues": []
+      "allowedValues": [
+
+      ],
+      "metadata": {
+        "description": "This parameter is used so that the location can be put in the parameters file, and processed by the deployment script, it is not otherwise used"
+      }
     },
     "ASPName": {
-      "type": "string" 
+      "type": "string",
+      "metadata": {
+        "description": "Object containing list of ASEs  to create."
+      }
     },
     "AseName": {
-      "type": "string"  
+      "type": "string",
+      "metadata": {
+        "description": "Object containing list of ASEs  to create."
+      }
     },
     "PricingTier": {
-      "type": "string"  
+      "type": "string",
+      "metadata": {
+        "description": "Object containing list of ASEs  to create."
+      }
     },
     "Capac": {
-      "type": "int"
+      "type": "int",
+      "metadata": {
+        "description": "Object containing list of ASEs  to create."
+      }
     },
     "AspCount": {
-      "type": "int"
+      "type": "int",
+      "metadata": {
+        "description": "Object containing list of ASEs  to create."
+      }
     }
   },
   "variables": {
-    "asergname": "[parameters('resourcegroup')]",
+    "asergname": "[parameters('asece')]",
     "reserved": "[equals(parameters('osType'),'Linux')]"
   },
   "resources": [
@@ -60,6 +90,7 @@
         "name": "CopyNumberOfASPs",
         "count": "[parameters('AspCount')]"
       }
+
     }
   ]
 }
