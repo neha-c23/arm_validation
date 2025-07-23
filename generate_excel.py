@@ -40,7 +40,7 @@ except FileNotFoundError:
     print("results.txt file not found.")
 
 # Determine the maximum number of rows needed
-max_rows = max(len(failed_tests), len(suggested_params))
+max_rows = max(len(failed_tests), len(custom_params), len(qs_params))
 
 # Write data to Excel
 for i in range(max_rows):
