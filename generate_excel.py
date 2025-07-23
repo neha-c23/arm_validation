@@ -1,4 +1,5 @@
 import openpyxl
+import ast
 
 # Create a new Excel workbook and select the active worksheet
 wb = openpyxl.Workbook()
@@ -18,25 +19,21 @@ qs_params = []
 try:
     with open("results.txt", "r", encoding="utf-8") as file:
         lines = file.readlines()
-
-        # Collect full failed test messages
-        current_message = ""
         for line in lines:
             if "[-]" in line:
-                if current_message:
-                    failed_tests.append(current_message.strip())
-                current_message = line
-            elif current_message and "[+]" not in line:
-                current_message += line
-        if current_message:
-            failed_tests.append(current_message.strip())
-
-        # Collect custom and QS parameters
-        for line in lines:
-            if "Custom params" in line:
-                custom_params = [param.strip() for param in line.split(":")[1].strip("{} \n").split(",")]
-            elif "QS params" in line:
-                qs_params = [param.strip() for param in line.split(":")[1].strip("{} \n").split(",")]
+                failed_tests.append(line.strip())
+            elif line.startswith("Custom params:"):
+                param_str = line.split("Custom params:")[1].strip()
+                try:
+                    custom_params = list(ast.literal_eval(param_str))
+                except Exception as e:
+                    print(f"Error parsing custom params: {e}")
+            elif line.startswith("QS params:"):
+                param_str = line.split("QS params:")[1].strip()
+                try:
+                    qs_params = list(ast.literal_eval(param_str))
+                except Exception as e:
+                    print(f"Error parsing QS params: {e}")
 
 except FileNotFoundError:
     print("results.txt file not found.")
