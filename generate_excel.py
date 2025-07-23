@@ -22,20 +22,19 @@ try:
 
         for line in lines:
             if "[-]" in line:
-                failed_tests.append(line)
+                while line!= '\n':
+                    failed_tests.append(line)
+                    
             if line == "**********************":
                 break
 
         for line in lines:
-            if "Custom Params" in line:
-                in_suggested_section = True
-                continue
-            if in_suggested_section:
-                custom_params.append(line.strip())
-            if "QS Params" in line:
-                in_suggested_section = False
-            if in_suggested_section == False:
-                qs_params.append(line)
+            if "Custom params" in line:
+                ws['B2'] = line
+            
+            if "QS params" in line:
+                ws['C2'] = line
+                
 except FileNotFoundError:
     print("results.txt file not found.")
 
