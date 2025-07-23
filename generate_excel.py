@@ -26,7 +26,7 @@ try:
                 if current_message:
                     failed_tests.append(current_message.strip())
                 current_message = line
-            elif current_message:
+            elif current_message and "[+]" not in line:
                 current_message += line
         if current_message:
             failed_tests.append(current_message.strip())
