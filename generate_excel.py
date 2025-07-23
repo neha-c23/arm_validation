@@ -22,19 +22,14 @@ try:
 
         for line in lines:
             if "[-]" in line:
-                while line!= '\n':
-                    failed_tests.append(line)
-                    
-            if line == "**********************":
-                break
+                failed_tests.append(line.strip())
 
         for line in lines:
             if "Custom params" in line:
-                ws['B2'] = line
-            
-            if "QS params" in line:
-                ws['C2'] = line
-                
+                custom_params.append(line.strip())
+            elif "QS params" in line:
+                qs_params.append(line.strip())
+
 except FileNotFoundError:
     print("results.txt file not found.")
 
@@ -47,10 +42,9 @@ for i in range(max_rows):
         ws.cell(row=i+2, column=1, value=failed_tests[i])
     if i < len(custom_params):
         ws.cell(row=i+2, column=2, value=custom_params[i])
-    if i<len(qs_params):
-        ws.cell(row = i+2, column = 3, value = qs_params[i])
+    if i < len(qs_params):
+        ws.cell(row=i+2, column=3, value=qs_params[i])
 
 # Save the workbook
 wb.save("validation_results.xlsx")
 print("Excel file 'validation_results.xlsx' has been created successfully.")
-
