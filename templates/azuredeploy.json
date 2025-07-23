@@ -3,15 +3,15 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "resourcegroup": {
-      "type": "string",
+      "type": "string"
       
     },
     "capacity": {
       "type": "int",
-      "defaultValue": 1,
+      "defaultValue": 1
     },
     "osType": {
-      "type": "string",
+      "type": "string"
     },
 
     "location": {
@@ -19,23 +19,23 @@
       "allowedValues": []
     },
     "ASPName": {
-      "type": "string",
+      "type": "string"
       
     },
     "AseName": {
-      "type": "string",
+      "type": "string"
      
     },
     "PricingTier": {
-      "type": "string",
+      "type": "string"
       
     },
     "Capac": {
-      "type": "int",
+      "type": "int"
       
     },
     "AspCount": {
-      "type": "int",
+      "type": "int"
       
     }
   },
