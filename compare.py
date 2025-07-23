@@ -5,17 +5,14 @@ def load_parameters_from_url(url):
     with urllib.request.urlopen(url) as response:
         data = response.read().decode('utf-8-sig')
         template = json.loads(data)
-    return set(k.lower() for k in template.get('parameters', {}).keys())
+    return set(k.upper() for k in template.get('parameters', {}).keys())
 
 def compare_parameters(maps_template_url, quickstart_template_url): 
     maps_params = load_parameters_from_url(maps_template_url)
     quickstart_params = load_parameters_from_url(quickstart_template_url)
 
-    missing_params = quickstart_params - maps_params
-
-    print("Parameters present in the Quickstart template but missing from the user's template:")
-    for param in sorted(missing_params):
-        print(param)
+    print (maps_params)
+    print (quickstart_params)
 
 # Call the function with URLs
 compare_parameters(
