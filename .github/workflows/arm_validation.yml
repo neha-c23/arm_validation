@@ -14,7 +14,6 @@ jobs:
     - name: Checkout your repository
       uses: actions/checkout@v4
 
-    
     - name: Run ARM-TTK Tests and Capture All Results
       shell: pwsh
       run: |
@@ -22,10 +21,6 @@ jobs:
         Import-Module ./tools/arm-ttk/arm-ttk/arm-ttk.psd1
         Test-AzTemplate -TemplatePath ./templates/azuredeploy.json -ErrorAction Continue
         Stop-Transcript
-
-
-
-
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -36,11 +31,14 @@ jobs:
       run: |
         echo "## Python Script Output" >> results.txt
         python compare.py >> results.txt
-    - name: Display Results
-      run: cat results.txt
 
-    - name: Upload Results
+    - name: Generate Excel Report
+      run: |
+        pip install openpyxl
+        python generate_excel.py
+
+    - name: Upload Excel Artifact
       uses: actions/upload-artifact@v4
       with:
         name: validation-results
-        path: results.txt
+        path: validation_results.xlsx
