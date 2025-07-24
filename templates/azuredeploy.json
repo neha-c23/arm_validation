@@ -3,63 +3,32 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "asece": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the App Service Environment CE where the app service plan will be created."
-      }
-    },
-    "capacity": {
-      "type": "int",
-      "defaultValue": 1,
-      "metadata": {
-        "description": "Defines the number of instances that will be allocated to the app service plan."
-      }
+      "type": "string"
     },
     "osType": {
-      "type": "string",
-      "metadata": {
-        "description": "The Operating system for the ASP"
-      }
+      "type": "string"
     },
 
     "location": {
       "type": "string",
       "allowedValues": [
 
-      ],
-      "metadata": {
-        "description": "This parameter is used so that the location can be put in the parameters file, and processed by the deployment script, it is not otherwise used"
-      }
+      ]
     },
     "ASPName": {
-      "type": "string",
-      "metadata": {
-        "description": "Object containing list of ASEs  to create."
-      }
+      "type": "string"
     },
     "AseName": {
-      "type": "string",
-      "metadata": {
-        "description": "Object containing list of ASEs  to create."
-      }
+      "type": "string"
     },
     "PricingTier": {
-      "type": "string",
-      "metadata": {
-        "description": "Object containing list of ASEs  to create."
-      }
+      "type": "string"
     },
     "Capac": {
-      "type": "int",
-      "metadata": {
-        "description": "Object containing list of ASEs  to create."
-      }
+      "type": "int"
     },
     "AspCount": {
-      "type": "int",
-      "metadata": {
-        "description": "Object containing list of ASEs  to create."
-      }
+      "type": "int"
     }
   },
   "variables": {
