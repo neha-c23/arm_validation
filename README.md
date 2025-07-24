@@ -1,6 +1,6 @@
 # ARM Templates validation automation  
-
-* Purpose:  
+  
+**Purpose:  
 Microsoft releases new ARM template schemas and resource API versions regularly, adding new features and updating the syntax for its ARM templates. 
 The MAPS custom ARM templates repository supports BP’s resource deployment automation pipelines. It is supported by deprecated schemas and old API versions. According to Microsoft best practices, API versions must not be more than 730 days old, if newer versions are available.  
   
@@ -10,7 +10,7 @@ At present, it is a primitive workflow for:
 1. Automating the validation of custom ARM templates with Microsoft best practices.  
 2. Suggesting new parameters based on Microsoft-recommended sample templates, one template at a time.  
    
-Repository structure:  
+**Repository structure:  
 arm_validation/  
 ├── .github/  
 │   └── workflows/  
@@ -32,17 +32,17 @@ The arm-template-validation.yml:
 2.	 Runs a Python script (compare.py) to print parameters present in the custom ARM template and those in the corresponding Quickstart template.  
 3.	 generate_excel.py compiles all the results and produces an artifact in .xlsx format.  
   
-Directions for use:  
+**Directions for use:  
 The workflow has a workflow_dispatch trigger, that can be manually activated under the Actions tab of the repository.  
 It is also triggered when a new template file is pushed to the .\templates folder.  
    
-Output:   
+**Output:   
 The workflow generates a downloadable artifact - a validate_results.xlsx file - that contains the list of failed arm-ttk tests, and the parameters contained in both - the custom template and the Azure Quickstart sample template.  
   
-Important note: The workflow can currently validate one template at a time.   
+**Important note: The workflow can currently validate one template at a time.   
   
   
-Planned enhancements:  
+**Planned enhancements:  
 The repository has been set up so that it can validate multiple templates at once. All templates must be added to the .\templates folder, and on triggering the workflow, all the templates will be validated at once.  
 The Test-AzTemplate cmdlet can test multiple templates at once. The user can also select unit tests to conduct on the templates, according to their business needs.  
   
