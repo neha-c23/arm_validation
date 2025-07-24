@@ -19,11 +19,11 @@ arm_validation/
 │   └── azuredeploy.json  
 ├── tools/  
 │   └── arm-ttk/  
-│       └── arm-ttk.psd1  
+│       ├── arm-ttk.psd1  
 │       └── Test-AzTemplate.ps1  
 ├── generate_excel.py  
-└── compare.py  
-  
+└── compare.py   
+    
 The arm-template-validation.yml:  
 1.	Carries out a suite of tests on the ARM template to validate the following:  
 •	Validating the author’s intent (eg. unused parameters or variables)  
