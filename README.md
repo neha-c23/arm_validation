@@ -1,6 +1,6 @@
 # ARM Templates validation automation  
   
-**Purpose:  
+** Purpose:  
 Microsoft releases new ARM template schemas and resource API versions regularly, adding new features and updating the syntax for its ARM templates. 
 The MAPS custom ARM templates repository supports BP’s resource deployment automation pipelines. It is supported by deprecated schemas and old API versions. According to Microsoft best practices, API versions must not be more than 730 days old, if newer versions are available.  
   
