@@ -58,7 +58,7 @@ for i in range(max_rows):
     if i < len(qs_params):
         ws.cell(row=i+2, column=3, value=qs_params[i])
     if i < len(suggested_params):
-        ws.cell(row=i+2, column=3, value=suggested_params[i])
+        ws.cell(row=i+2, column=4, value=suggested_params[i])
 
 # Save the workbook
 wb.save("validation_results.xlsx")
