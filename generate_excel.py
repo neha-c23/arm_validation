@@ -10,11 +10,13 @@ ws.title = "Validation Results"
 ws['A1'] = 'FAILED TESTS'
 ws['B1'] = 'CUSTOM TEMPLATE PARAMETERS'
 ws['C1'] = 'QS TEMPLATE PARAMETERS'
+ws['D1'] = 'SUGGESTED PARAMETERS'
 
 # Read failed tests and suggested parameters from results.txt
 failed_tests = []
 custom_params = []
 qs_params = []
+suggested_params= []
 
 try:
     with open("results.txt", "r", encoding="utf-8") as file:
@@ -34,6 +36,12 @@ try:
                     qs_params = list(ast.literal_eval(param_str))
                 except Exception as e:
                     print(f"Error parsing QS params: {e}")
+            elif line.startswith ("Suggested params:"):
+                param_str = param_str = line.split("Suggested params:")[1].strip()
+                try:
+                    suggested_params = list(ast.literal_eval(param_str))
+                except Exception as e:
+                    print(f"Error parsing suggested params: {e}")
 
 except FileNotFoundError:
     print("results.txt file not found.")
@@ -49,6 +57,8 @@ for i in range(max_rows):
         ws.cell(row=i+2, column=2, value=custom_params[i])
     if i < len(qs_params):
         ws.cell(row=i+2, column=3, value=qs_params[i])
+    if i < len(suggested_params):
+        ws.cell(row=i+2, column=3, value=suggested_params[i])
 
 # Save the workbook
 wb.save("validation_results.xlsx")
