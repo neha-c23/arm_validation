@@ -9,7 +9,7 @@ ws.title = "Validation Results"
 # Set headers
 ws['A1'] = 'FAILED TESTS'
 ws['B1'] = 'CUSTOM TEMPLATE PARAMETERS'
-ws['C1'] = 'QS TEMPLATE PARAMETERS'
+ws['C1'] = 'AZURE TEMPLATE PARAMETERS'
 ws['D1'] = 'SUGGESTED PARAMETERS'
 
 # Read failed tests and suggested parameters from results.txt
