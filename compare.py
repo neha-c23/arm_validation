@@ -13,9 +13,9 @@ def compare_parameters(maps_template_url, quickstart_template_url):
 
     additional_params = quickstart_params - maps_params
 
-    print ("Custom params:", maps_params)
-    print ("QS params:", quickstart_params)
-    print ("Suggested params:", additional_params)
+    print ("Custom params:", sorted(maps_params))
+    print ("QS params:", sorted(quickstart_params))
+    print ("Suggested params:", sorted(additional_params))
 
 # Call the function with URLs
 compare_parameters(
